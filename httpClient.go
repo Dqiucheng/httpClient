@@ -51,7 +51,7 @@ func httpResponse(req *http.Request, responseErr error) response {
 
 	res.TotalTime = time.Now().Sub(startT)
 	if err != nil { // 这里报错说明没有响应内容
-		res.Error = responseErr
+		res.Error = err
 		return res
 	}
 
@@ -65,16 +65,21 @@ func httpResponse(req *http.Request, responseErr error) response {
 	return res
 }
 
-// SetTimeout 	设置请求超时时间
-// second		请求超时时间
+// SetTimeout 	设置请求超时时间.
+// second		请求超时时间.
 func SetTimeout(second time.Duration) bool {
 	httpTimeout = second * time.Second
 	return true
 }
 
-// GET 发送GET请求
-// url：		请求地址
-// headers：	设置请求头
+// GetTimeout 	查看请求超时时间.
+func GetTimeout() time.Duration {
+	return httpTimeout
+}
+
+// GET 发送GET请求.
+// url：		请求地址.
+// headers：	设置请求头.
 func GET(url string, headers ...map[string]string) response {
 	return httpResponse(newRequest(request{
 		Method:  "GET",
@@ -84,10 +89,10 @@ func GET(url string, headers ...map[string]string) response {
 	}))
 }
 
-// POST 发送POST请求
-// url：		请求地址
-// data：		POST请求提交的数据
-// headers：	设置请求头，默认Content-Type：application/json;charset=UTF-8
+// POST 发送POST请求.
+// url：		请求地址.
+// data：		POST请求提交的数据.
+// headers：	设置请求头，默认Content-Type：application/json;charset=UTF-8.
 func POST(url string, data []byte, headers ...map[string]string) response {
 	if len(headers) == 0 {
 		headers = append(headers, map[string]string{"Content-Type": "application/json;charset=UTF-8"})
